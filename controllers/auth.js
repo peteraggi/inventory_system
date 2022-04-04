@@ -66,51 +66,88 @@ exports.login = async (req, res) => {
   }
 };
 
-// exports.register = (req, res) => {
-//   console.log(req.body);
+exports.register = async (req, res) => {
+  console.log(req.body);
 
-//   const { name, email, password, passwordConfirm } = req.body;
+  const { full_name, user_name, password, passwordConfirm } = req.body;
 
-//   db.query(
-//     "SELECT email FROM users WHERE email = ?",
-//     [email],
-//     async (error, results) => {
+  if (!full_name || !user_name || !password || !passwordConfirm) {
+    const message = "Please fill all fields!"; 
+    res.cookie("msg", message, { httpOnly: true });
+    return res.status(400).redirect('/register');
 
-//       if (error) {
-//         console.log(error);
-//       }
+  } else{
+    // if all fields are entered, then continue
+    // http://localhost/APIs/apiInventorySystem/lukard/api/users/registerUser.php
+    const url =  `http://localhost/APIs/apiInventorySystem/lukard/api/users/registerUser.php?full_name=${full_name}&user_name=${user_name}&password=${password}&passwordConfirm=${passwordConfirm}`;
 
-//       if (results.length > 0) {
-//         return res.render("register", {
-//           message: "That email is already in use",
-//         });
-//       } 
+    // const url = `http://localhost/APIs/apiInventorySystem/lukard/api/users/loginUser.php?user_name=${user_name}&password=${password}`;
+
+      const result = await fetch(url);
+      const apiResponse = await result.json();
+
+      if(apiResponse.success==0){
+        console.log("Error..");
+        const results = null;
+        const message = apiResponse.message; 
+        res.cookie("msg", message, { httpOnly: true });
+        return res.status(400).redirect('/register');
+      } 
+      else if (apiResponse.success==1) {
+        console.log("Successfull..");
+        // const results = null;
+        const message = apiResponse.message; 
+        res.cookie("msg", message, { httpOnly: true });
+        return res.status(200).redirect('/login');
+        
+      }else{
+        // unknown error
+
+      }
+
+  }
+
+
+  // db.query(
+  //   "SELECT email FROM users WHERE email = ?",
+  //   [email],
+  //   async (error, results) => {
+
+  //     if (error) {
+  //       console.log(error);
+  //     }
+
+  //     if (results.length > 0) {
+  //       return res.render("register", {
+  //         message: "That email is already in use",
+  //       });
+  //     } 
       
-//       else if (password !== passwordConfirm) {
-//         return res.render("register", {
-//           message: "Passwords do not match",
-//         });
-//       }
+  //     else if (password !== passwordConfirm) {
+  //       return res.render("register", {
+  //         message: "Passwords do not match",
+  //       });
+  //     }
 
-//       let hashedPassword = await bcrypt.hash(password, 8);
-//       console.log(hashedPassword);
+  //     let hashedPassword = await bcrypt.hash(password, 8);
+  //     console.log(hashedPassword);
 
-//       db.query(
-//         "INSERT INTO users SET ?",
-//         { name: name, email: email, password: hashedPassword },
-//         (error, results) => {
-//           if (error) {
-//             console.log(error);
-//           } else {
-//             console.log(results);
-//             return res.render("register", {
-//               message: "User registered",
-//             });
-//           }
-//         }
-//       );
-//     }
+  //     db.query(
+  //       "INSERT INTO users SET ?",
+  //       { name: name, email: email, password: hashedPassword },
+  //       (error, results) => {
+  //         if (error) {
+  //           console.log(error);
+  //         } else {
+  //           console.log(results);
+  //           return res.render("register", {
+  //             message: "User registered",
+  //           });
+  //         }
+  //       }
+  //     );
+  //   }
 
 
-//   );
-// };
+  // );
+};

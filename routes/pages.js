@@ -27,14 +27,33 @@ router.get("/login", function(req, res){
     }
 });
 
+// router.get("/register", function(req, res){
+//     res.render("pages/register")
+// });
+
+router.get("/register", function(req, res){
+    // cookie handling
+    const { cookies } = req;
+    if(cookies.msg){
+        var msg = cookies.msg;
+        res.clearCookie("msg");
+        return res.render("pages/register", {
+            message: msg ? msg : null
+        });      
+    }
+    else {
+        var msg;
+        return res.render("pages/register", {
+            message: msg ? msg : null
+        });
+    }
+});
+
 router.get("/product", function(req, res){
     res.render("pages/product")
 
 });
-router.get("/register", function(req, res){
-    res.render("pages/register")
 
-});
 router.get("/sales", function(req, res){
     res.render("pages/sales")
 
