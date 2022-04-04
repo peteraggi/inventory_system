@@ -18,7 +18,8 @@ exports.login = async (req, res) => {
     } else {
 
       // http://localhost/APIs/apiInventorySystem/lukard/api/loginUser.php?user_name=lukard&password=1
-      const url = `http://localhost/APIs/apiInventorySystem/lukard/api/loginUser.php?user_name=${user_name}&password=${password}`;
+      // http://localhost/APIs/apiInventorySystem/lukard/api/users/loginUser.php
+      const url = `http://localhost/APIs/apiInventorySystem/lukard/api/users/loginUser.php?user_name=${user_name}&password=${password}`;
       const result = await fetch(url);
       const apiResponse = await result.json();
 
