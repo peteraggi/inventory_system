@@ -9,7 +9,22 @@ router.get("/", function(req, res){
     res.render("main/index");
 });
 router.get("/login", function(req, res){
-    res.render("pages/login");
+    // res.render("pages/login");
+    // cookie handling
+    const { cookies } = req;
+    if(cookies.msg){
+        var msg = cookies.msg;
+        res.clearCookie("msg");
+        return res.render("pages/login", {
+            message: msg ? msg : null
+        });      
+    }
+    else {
+        var msg;
+        return res.render("pages/login", {
+            message: msg ? msg : null
+        });
+    }
 });
 
 router.get("/product", function(req, res){

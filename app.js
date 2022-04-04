@@ -1,10 +1,15 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 const path = require("path");
 const { engine } = require('express-handlebars');
-require("dotenv").config();
+// require("dotenv").config();
+const dotenv = require("dotenv");
 
 const app = express();
-const port = process.env.PORT ||3000;
+const { PORT = 3000 } = process.env;
+
+// dotenv.config({ path: "./.env" });
+dotenv.config({ path: path.join(__dirname, "./.env") });
 
 const publicDirectory = path.join(__dirname, "./public");
 app.use(express.static(publicDirectory));
@@ -13,6 +18,7 @@ app.use(express.static(publicDirectory));
 app.use(express.urlencoded({ extended: false }));
 // Parse JSON bodies (as sent by API clients)
 app.use(express.json());
+app.use(cookieParser());
 
 app.set("view engine","hbs");
 app.engine('hbs', engine({
@@ -22,12 +28,7 @@ app.engine('hbs', engine({
     partialsDir: __dirname + '/views/partials',
 }));
 
-
-
 app.use("/", require("./routes/pages"));
+app.use("/auth", require("./routes/auth"));
 
-
-
-app.listen(port, function(){
-    console.log(`app is listening to the port ${port} .....`);
-}); 
+app.listen(PORT, ()=> console.log(`Listening on Port ${PORT}`));
